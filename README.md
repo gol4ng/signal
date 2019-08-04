@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/gol4ng/signal.svg?branch=master)](https://travis-ci.com/gol4ng/signal)
+
 # signal
 This repository provides helpers with signals
 
