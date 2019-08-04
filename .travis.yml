@@ -1,5 +1,9 @@
 language: go
 
+env:
+  global:
+    - CC_TEST_REPORTER_ID=d21cbd9c06e8e89a1be2dbd52b76d9b037c2895189cb592b0f88a6fc19b85285
+
 go:
   - master
 
