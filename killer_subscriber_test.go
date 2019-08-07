@@ -9,6 +9,7 @@ import (
 	"unsafe"
 
 	"bou.ke/monkey"
+
 	"github.com/stretchr/testify/assert"
 
 	sig "github.com/gol4ng/signal"
