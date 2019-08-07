@@ -7,6 +7,9 @@ import (
 )
 
 var signalsKillers = []os.Signal{os.Kill, os.Interrupt, syscall.SIGHUP, syscall.SIGTERM, syscall.SIGQUIT, syscall.SIGSTOP}
+
+// killer subscriber is global and unique
+// it is unique because we only need once per application
 var killerSubscriber func()
 
 func KillerSubscriber() func() {
