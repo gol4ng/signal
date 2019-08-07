@@ -59,7 +59,7 @@ func TestUnSubscribe(t *testing.T) {
 	defer monkey.UnpatchAll()
 
 	unsubscribeFunc := sig.Subscribe(func(signal os.Signal) {
-		assert.Equal(t, signal, subscribedSignal, "wrong signal ingested by subscriber.")
+		t.Error("callback func must not be called.")
 		callbackCalled = true
 	}, subscribedSignal)
 
