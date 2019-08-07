@@ -6,7 +6,7 @@ import (
 	"syscall"
 )
 
-var signalsKiller = []os.Signal{os.Kill, os.Interrupt, syscall.SIGHUP, syscall.SIGTERM, syscall.SIGQUIT, syscall.SIGSTOP}
+var signalsKillers = []os.Signal{os.Kill, os.Interrupt, syscall.SIGHUP, syscall.SIGTERM, syscall.SIGQUIT, syscall.SIGSTOP}
 var killerSubscriber func()
 
 func KillerSubscriber() func() {
@@ -25,7 +25,7 @@ func KillerSubscriber() func() {
 			}
 			println("Press `ctrl+c` again to kill application.")
 			stopping = true
-		}, signalsKiller...)
+		}, signalsKillers...)
 	}
 	return killerSubscriber
 }
