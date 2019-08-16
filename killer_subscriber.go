@@ -10,7 +10,7 @@ var signalsKillers = []os.Signal{os.Kill, os.Interrupt, syscall.SIGHUP, syscall.
 
 // killer subscriber is global and unique
 // it is unique because we only need one per application
-var KillerSubscriberFunc func()
+var killerSubscriberFunc func()
 
 // This is a simple signal subscriber that kills program
 //
@@ -24,9 +24,9 @@ var KillerSubscriberFunc func()
 // Final user can now CTRL-C to stop your app gracefully
 // and if CTRL-C is stroked a second time it is gonna kill the application
 func KillerSubscriber() func() {
-	if KillerSubscriberFunc == nil {
+	if killerSubscriberFunc == nil {
 		stopping := false
-		KillerSubscriberFunc = Subscribe(func(signal os.Signal) {
+		killerSubscriberFunc = Subscribe(func(signal os.Signal) {
 			if signal == os.Kill {
 				log.Println("killing application")
 				os.Exit(1)
@@ -41,7 +41,7 @@ func KillerSubscriber() func() {
 			stopping = true
 		}, signalsKillers...)
 	}
-	return KillerSubscriberFunc
+	return killerSubscriberFunc
 }
 
 // This helper allows you to enable killer subscriber and subscribe your callback at once

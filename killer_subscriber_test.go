@@ -1,4 +1,6 @@
-package signal_test
+// the test is in the same package as the "usable" code in order to be able to reinitialize `signal.killerSubscriberFunc`
+// at the end of each test
+package signal
 
 import (
 	"os"
@@ -11,8 +13,6 @@ import (
 	"bou.ke/monkey"
 
 	"github.com/stretchr/testify/assert"
-
-	sig "github.com/gol4ng/signal"
 )
 
 func TestKillerSubscribe_Kill(t *testing.T) {
@@ -33,11 +33,11 @@ func TestKillerSubscribe_Kill(t *testing.T) {
 	})
 	defer func() {
 		monkey.UnpatchAll()
-		sig.KillerSubscriberFunc = nil
+		// reinitialize global var in order not to mess with other tests
+		killerSubscriberFunc = nil
 	}()
-
-	sig.KillerSubscriber()
-
+	// subscribe to os signals related to an interruption signal
+	KillerSubscriber()
 	// simulate signal receive
 	killerSignalChan <- os.Kill
 	// wait for goroutine callback func fulfilment (@see subscriber.go `go callback(killerSubscribedSignals)`)
@@ -45,7 +45,7 @@ func TestKillerSubscribe_Kill(t *testing.T) {
 	assert.True(t, exitCalled, "exit func should be called.")
 }
 
-func TestKillerSubscribe_Interupt(t *testing.T) {
+func TestKillerSubscribe_Interrupt(t *testing.T) {
 	var killerSignalChan chan<- os.Signal
 	var killerSubscribedSignals = []os.Signal{os.Kill, os.Interrupt, syscall.SIGHUP, syscall.SIGTERM, syscall.SIGQUIT, syscall.SIGSTOP}
 	var exitCalled = false
@@ -63,11 +63,11 @@ func TestKillerSubscribe_Interupt(t *testing.T) {
 	})
 	defer func() {
 		monkey.UnpatchAll()
-		sig.KillerSubscriberFunc = nil
+		// reinitialize global var in order not to mess with other tests
+		killerSubscriberFunc = nil
 	}()
-
-	sig.KillerSubscriber()
-
+	// subscribe to os signals related to an interruption signal
+	KillerSubscriber()
 	// simulate signal receive
 	killerSignalChan <- os.Interrupt
 	// wait for goroutine callback func fulfilment (@see subscriber.go `go callback(killerSubscribedSignals)`)
@@ -78,7 +78,7 @@ func TestKillerSubscribe_Interupt(t *testing.T) {
 	assert.True(t, exitCalled, "exit func should be called.")
 }
 
-func TestSubscribeWithKiller_Interupt(t *testing.T) {
+func TestSubscribeWithKiller_Interrupt(t *testing.T) {
 	var killerSignalChan chan<- os.Signal
 	var killerSubscribedSignals = []os.Signal{os.Kill, os.Interrupt, syscall.SIGHUP, syscall.SIGTERM, syscall.SIGQUIT, syscall.SIGSTOP}
 	var exitCalled = false
@@ -105,10 +105,11 @@ func TestSubscribeWithKiller_Interupt(t *testing.T) {
 	})
 	defer func() {
 		monkey.UnpatchAll()
-		sig.KillerSubscriberFunc = nil
+		// reinitialize global var in order not to mess with other tests
+		killerSubscriberFunc = nil
 	}()
 
-	sig.SubscribeWithKiller(func(signal os.Signal) {
+	SubscribeWithKiller(func(signal os.Signal) {
 		assert.Equal(t, realSignal, signal, "wrong signal ingested by subscriber.")
 		callbackCalledTimes++
 	}, subscribedSignal)
@@ -149,11 +150,12 @@ func TestUnKillerSubscribe(t *testing.T) {
 	})
 	defer func() {
 		monkey.UnpatchAll()
-		sig.KillerSubscriberFunc = nil
+		// reinitialize global var in order not to mess with other tests
+		killerSubscriberFunc = nil
 	}()
 
-	unsubscribeFunc := sig.KillerSubscriber()
-
+	unsubscribeFunc := KillerSubscriber()
+	// unsubscribe from os signals
 	unsubscribeFunc()
 	// wait for goroutine signal.Stop func call (@see subscriber.go `case <-stopChan:`)
 	time.Sleep(1 * time.Millisecond)
