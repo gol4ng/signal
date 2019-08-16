@@ -31,7 +31,10 @@ func TestKillerSubscribe_Kill(t *testing.T) {
 			assert.Contains(t, signals, s)
 		}
 	})
-	defer monkey.UnpatchAll()
+	defer func() {
+		monkey.UnpatchAll()
+		sig.KillerSubscriberFunc = nil
+	}()
 
 	sig.KillerSubscriber()
 
@@ -58,7 +61,10 @@ func TestKillerSubscribe_Interupt(t *testing.T) {
 			assert.Contains(t, signals, s)
 		}
 	})
-	defer monkey.UnpatchAll()
+	defer func() {
+		monkey.UnpatchAll()
+		sig.KillerSubscriberFunc = nil
+	}()
 
 	sig.KillerSubscriber()
 
@@ -97,7 +103,10 @@ func TestSubscribeWithKiller_Interupt(t *testing.T) {
 			assert.Contains(t, signals, s)
 		}
 	})
-	defer monkey.UnpatchAll()
+	defer func() {
+		monkey.UnpatchAll()
+		sig.KillerSubscriberFunc = nil
+	}()
 
 	sig.SubscribeWithKiller(func(signal os.Signal) {
 		assert.Equal(t, realSignal, signal, "wrong signal ingested by subscriber.")
@@ -138,7 +147,10 @@ func TestUnKillerSubscribe(t *testing.T) {
 		assert.Equal(t, killerSignalChan, c)
 		stopCalled = true
 	})
-	defer monkey.UnpatchAll()
+	defer func() {
+		monkey.UnpatchAll()
+		sig.KillerSubscriberFunc = nil
+	}()
 
 	unsubscribeFunc := sig.KillerSubscriber()
 
