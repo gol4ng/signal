@@ -11,7 +11,7 @@ import (
 // It returns an `unsubscribe` function that stops the goroutine and clean allocated object
 //
 // Example:
-// unsubscriber := signal.subscribe(func(s os.Signal) {
+// unsubscriber := signal.Subscribe(func(s os.Signal) {
 //   fmt.Println("process as been asked to be stopped")
 // }, os.SIGSTOP)
 //
