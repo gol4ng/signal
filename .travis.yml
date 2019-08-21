@@ -1,5 +1,9 @@
 language: go
 
+cache:
+  directories:
+    - $GOPATH/pkg/mod
+
 go:
   - master
 
@@ -12,4 +16,4 @@ script:
   - go test -gcflags=-l -coverprofile c.out ./...
 
 after_script:
-  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+  - CC_TEST_REPORTER_ID=$CC_TEST_REPORTER_ID ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
