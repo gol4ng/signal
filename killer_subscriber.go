@@ -6,7 +6,9 @@ import (
 	"syscall"
 )
 
-var signalsKillers = []os.Signal{os.Kill, os.Interrupt, syscall.SIGHUP, syscall.SIGTERM, syscall.SIGQUIT, syscall.SIGSTOP}
+// accordling to https://github.com/golang/go/issues/9463
+// syscall.SIGSTOP, os.Kill are here for documentation purpose
+var signalsKillers = []os.Signal{os.Interrupt, syscall.SIGHUP, syscall.SIGTERM, syscall.SIGQUIT, syscall.SIGSTOP, os.Kill}
 
 // killer subscriber is global and unique
 // it is unique because we only need one per application
@@ -27,11 +29,6 @@ func KillerSubscriber() func() {
 	if killerSubscriberFunc == nil {
 		stopping := false
 		killerSubscriberFunc = Subscribe(func(signal os.Signal) {
-			if signal == os.Kill {
-				log.Println("killing application")
-				os.Exit(1)
-				return
-			}
 			if stopping {
 				log.Println("killing application")
 				os.Exit(130)
