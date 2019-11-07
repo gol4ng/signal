@@ -31,6 +31,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"syscall"
 	"time"
 
 	"github.com/gol4ng/signal"
@@ -38,8 +39,8 @@ import (
 
 func main() {
 	defer signal.Subscribe(func(signal os.Signal) {
-		fmt.Println("this code is execute when signal os.Interrupt, os.Kill was received")
-	}, os.Interrupt, os.Kill)()
+		fmt.Println("this code is execute when signal os.Interrupt, syscall.SIGTERM was received")
+	}, os.Interrupt, syscall.SIGTERM)()
 
     // your application code here
 }

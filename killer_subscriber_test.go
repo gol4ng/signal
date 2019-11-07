@@ -15,36 +15,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestKillerSubscribe_Kill(t *testing.T) {
-	var killerSignalChan chan<- os.Signal
-	var killerSubscribedSignals = []os.Signal{os.Kill, os.Interrupt, syscall.SIGHUP, syscall.SIGTERM, syscall.SIGQUIT, syscall.SIGSTOP}
-	var exitCalled = false
-
-	monkey.Patch(os.Exit, func(code int) {
-		assert.Equal(t, 1, code)
-		exitCalled = true
-	})
-	monkey.Patch(signal.Notify, func(c chan<- os.Signal, signals ...os.Signal) {
-		// get subscriber internal chan in order to simulate signal receive
-		killerSignalChan = c
-		for _, s := range killerSubscribedSignals {
-			assert.Contains(t, signals, s)
-		}
-	})
-	defer func() {
-		monkey.UnpatchAll()
-		// reinitialize global var in order not to mess with other tests
-		killerSubscriberFunc = nil
-	}()
-	// subscribe to os signals related to an interruption signal
-	KillerSubscriber()
-	// simulate signal receive
-	killerSignalChan <- os.Kill
-	// wait for goroutine callback func fulfilment (@see subscriber.go `go callback(killerSubscribedSignals)`)
-	time.Sleep(1 * time.Millisecond)
-	assert.True(t, exitCalled, "exit func should be called.")
-}
-
 func TestKillerSubscribe_Interrupt(t *testing.T) {
 	var killerSignalChan chan<- os.Signal
 	var killerSubscribedSignals = []os.Signal{os.Kill, os.Interrupt, syscall.SIGHUP, syscall.SIGTERM, syscall.SIGQUIT, syscall.SIGSTOP}
