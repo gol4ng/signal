@@ -39,7 +39,7 @@ import (
 
 func main() {
 	defer signal.Subscribe(func(signal os.Signal) {
-		fmt.Println("this code is execute when signal os.Interrupt, os.Kill was received")
+		fmt.Println("this code is execute when signal os.Interrupt, syscall.SIGTERM was received")
 	}, os.Interrupt, syscall.SIGTERM)()
 
     // your application code here
