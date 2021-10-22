@@ -19,9 +19,9 @@ Signal subscriber that allows you to attach a callback to an `os.Signal` notific
 
 Useful to react to any os.Signal.
 
-It returns an `unsubscribe` function that can gracefully stop some http server and clean allocated object
+It returns an `unsubscribe` function that can gracefully stop some http server and clean allocated objects
 
-> :warning: If you defer unsubcribe dont forget the final `()`, If you forget it go defer will execute the subscribe process
+> :warning: If you defer unsubcribe func, dont forget the final `()`, If you forget it go defer will execute the subscribe process
 
 > defer signal.Subscribe(func(){}, signals...)**()**
 
@@ -39,7 +39,7 @@ import (
 
 func main() {
 	defer signal.Subscribe(func(signal os.Signal) {
-		fmt.Println("this code is execute when signal os.Interrupt, syscall.SIGTERM was received")
+		fmt.Println("this code is executed when signal os.Interrupt, syscall.SIGTERM was received")
 	}, os.Interrupt, syscall.SIGTERM)()
 
     // your application code here
@@ -49,7 +49,7 @@ func main() {
 ## With killer
 
 The killer subscriber will register your signal handler, 
-but it register another one that gonna to kill (`os.Exit`) application if 2 [killer signals](killer_subscriber.go#L9) was received.
+but it registers another one that gonna kill (`os.Exit`) application if 2 [killer signals](killer_subscriber.go#L9) were received.
 
 ```go
 package main
@@ -66,7 +66,7 @@ import (
 func main() {
     defer signal.SubscribeWithKiller(func(signal os.Signal) {
       // here you can implement your application stopping steps
-		fmt.Println("this code is execute when signal os.Interrupt, syscall.SIGTERM was received")
+		fmt.Println("this code is executed when signal os.Interrupt, syscall.SIGTERM was received")
     }, os.Interrupt, syscall.SIGTERM)()
 
     // your application code here
